@@ -46,6 +46,8 @@ def clean_phone(
 
     Read more in the :ref:`User Guide <phone_userguide>`.
 
+    Read more in the :ref:`User Guide <phone_userguide>`.
+
     Parameters
     ----------
     df
