@@ -140,20 +140,81 @@ Check [plot](https://sfu-db.github.io/dataprep/user_guide/eda/plot.html), [plot_
 
 ## Clean
 
-DataPrep.Clean contains simple functions designed for cleaning and standardizing a column in a DataFrame. It provides
+DataPrep.Clean contains simple functions designed for cleaning and validating a data in a DataFrame. It provides
 
-- A unified API: each function follows the syntax `clean_{type}(df, "column name")` (see an example below)
-- Python Data Science Support: its design for cleaning pandas and Dask DataFrames enables seamless integration into the Python data science workflow
-- Transparency: a report is generated that summarizes the alterations to the data that occured during cleaning
 
-The following example shows how to clean a column containing messy emails:
+- **A Unified API**: each function follows the syntax `clean_{type}(df, "column name")` (see an example below).
+- **Python Data Science Support**: its design for cleaning pandas and Dask DataFrames enables seamless integration into the Python data science workflow.
+- **Speed**: the computations are parallelized using Dask. It can clean **50K rows in around 1 second**.
+- **Transparency**: a report is generated that summarizes the alterations to the data that occured during cleaning.
 
-<center><img src="https://github.com/sfu-db/dataprep/blob/develop/assets/clean_example_1.jpg"/></center>
-<center><img src="https://github.com/sfu-db/dataprep/blob/develop/assets/clean_example_2.jpg"/></center>
+The following example shows how clean and standardize a column of phone numbers.
+
+``` python
+>>> from dataprep.datasets import load_dataset
+>>> df = load_dataset('business')
+>>> df['Phone']
+0         250-206-1674
+1       (778) 516-5595
+2         250 488 4198
+>>> from dataprep.clean import clean_phone
+>>> df_clean = clean_phone(df, 'Phone')
+Phone Number Cleaning Report:
+	64 values cleaned (5.26%)
+	16 values unable to be parsed (1.32%), set to NaN
+Result contains 1104 (90.79%) values in the correct format and 112 null values (9.21%)
+>>> df_clean['Phone_clean']
+0       250-206-1674
+1       778-516-5595
+2       250-488-4198
+```
 
 Type validation is also supported:
 
-<center><img src="https://github.com/sfu-db/dataprep/blob/develop/assets/clean_example_3.jpg"/></center>
+``` python
+>>> from dataprep.clean import validate_phone
+>>> df['Phone'][~validate_phone(df['Phone'])]
+4                               604-569-20054
+5                                 604-266-904
+6                                     V1T 7Z3
+```
+
+### Use Case 1: Validation
+
+
+``` python
+>>> from dataprep.clean import validate_phone
+>>> df['Phone'][~validate_phone(df['Phone'])]
+4                               604-569-20054
+5                                 604-266-904
+6                                     V1T 7Z3
+```
+
+### Use Case 2: Standardization 
+
+``` python
+>>> from dataprep.datasets import load_dataset
+>>> df = load_dataset('business')
+>>> df['Phone']
+0         250-206-1674
+1       (778) 516-5595
+2         250 488 4198
+>>> from dataprep.clean import clean_phone
+>>> df_clean = clean_phone(df, 'Phone')
+Phone Number Cleaning Report:
+	64 values cleaned (5.26%)
+	16 values unable to be parsed (1.32%), set to NaN
+Result contains 1104 (90.79%) values in the correct format and 112 null values (9.21%)
+>>> df_clean['Phone_clean']
+0       250-206-1674
+1       778-516-5595
+2       250-488-4198
+```
+
+### Use Case 3: Type Detection
+Coming soon.
+
+Supported semantic types: **[Country Names](https://sfu-db.github.io/dataprep/user_guide/clean/clean_country.html)** | **[Email Addresses](https://sfu-db.github.io/dataprep/user_guide/clean/clean_email.html)** | **[Geographic Coordinates](https://sfu-db.github.io/dataprep/user_guide/clean/clean_lat_long.html)** | **IP Addresses** | **[Phone Numbers](https://sfu-db.github.io/dataprep/user_guide/clean/clean_phone.html)** | **[URLs](https://sfu-db.github.io/dataprep/user_guide/clean/clean_url.html)**
 
 Below are the supported semantic types (more are currently being developed).
 
@@ -162,19 +223,22 @@ Below are the supported semantic types (more are currently being developed).
       <th>Semantic Types</th>
     </tr>
     <tr>
-      <td>longitude/latitude</td>
+      <td>Country Names</td>
     </tr>
     <tr>
-      <td>country</td>
+      <td>Email Addresses</td>
     </tr>
     <tr>
-      <td>email</td>
+      <td>Geographic Coordinates</td>
     </tr>
     <tr>
-      <td>url</td>
+      <td>IP Addresses</td>
     </tr>
     <tr>
-      <td>phone</td>
+      <td>Phone Numbers</td>
+    </tr>
+    <tr>
+      <td>URLs</td>
     </tr>
   </table>
 
