@@ -57,8 +57,6 @@ def clean_url(
 
     Read more in the :ref:`User Guide <url_userguide>`.
 
-    Read more in the :ref:`User Guide <url_userguide>`.
-
     Parameters
     ----------
     df

@@ -1,4 +1,5 @@
 DataPrep.Clean
+==============
 
 API reference for the DataPrep.Clean subpackage.
 
@@ -12,13 +13,6 @@ Column Headers
 
 Country Names
 -------------
-=======
-================================
-
-API reference for the DataPrep.Clean subpackage.
-
-Country Names
------------------------------------------------
 
 .. automodule:: dataprep.clean.clean_country
    :members:
